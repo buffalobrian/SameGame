@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Cool Custom Card Craft Creations</title>
+  <title>The SameGame</title>
   <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
@@ -13,27 +13,53 @@
   <div id="container"></div>
 
   <script type="text/babel">
+  function rect(props) {
+	const {ctx, x, y, width, height} = props;
+	ctx.fillStyle = "black";
+	ctx.fillRect(x, y, width, height);
+	ctx.fillStyle = props.color;
+	ctx.fillRect(x+1, y+1, width-2, height-2);
+  }
+  
   class SameGameBoard extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 		
 		this.state = {
-			board: [],
+			board: [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
 			gameOver: false,
-			score: 0
+			score: 0,
+			colors: ["red", "blue", "green", "yellow"]
 		}
+	}
+	
+	componentDidMount() {
+		this.updateCanvas();
+	}
+	
+	componentDidUpdate() {
+		this.updateCanvas();
+	}
+	updateCanvas() {
+		const ctx = this.refs.canvas.getContext('2d');
+		for(var col = 0; col < this.state.board.length; col++) {
+			for(var row = 0; row < this.state.board[col].length; row++) {
+				rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: this.state.colors[0]} );
+			}
+		}
+		rect({ctx, x: 0, y: 0, width: 25, height: 25, color: this.state.colors[0]});
+		rect({ctx, x: 25, y: 0, width: 25, height: 25, color: "blue"});
+		rect({ctx, x: 110, y: 110, width: 25, height: 25, color: "red"});
 	}
 	
 	render() {
 		var style = {
-			width: 400, // Each square is 25 by 25 pixels
-			height: 400,
 			border: "1px solid black"
 		}
 		
 		return (
 			<div>
-				<canvas style={style}></canvas>
+				<canvas width={400} height={400} ref ="canvas" style={style}></canvas>
 				<p>Score: {this.state.score}</p>
 			</div>
 		);
