@@ -83,6 +83,7 @@
 		}
 
 		this.init = this.init.bind(this);
+		this.tick = this.tick.bind(this);
 		
 		this.init(this.state.board);
 		setInterval(this.tick, 200);
@@ -115,6 +116,11 @@
 	}
 
 	componentDidUpdate() {
+		this.updateCanvas();
+	}
+	
+	tick() {
+		this.state.snake = [[0,0]];
 		this.updateCanvas();
 	}
 
