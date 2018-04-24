@@ -21,6 +21,34 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 
+<style>
+#div1 {
+    width: 400px;
+    height: 300px;
+    border: 1px solid #aaaaaa;
+float:left;
+}
+
+#condiv{
+  height: 300px;
+}
+</style>
+
+<script>
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+}
+</script>
 <body>
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
     <!-- Brand -->
@@ -50,202 +78,41 @@
     </div>
   </nav>
   <div id="container"></div>
+  <div id = "condiv">
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
 
-  <script type="text/babel">
-  //var arr = [];
-  function initArray(state, arr) {
-    var colors = 0;
-    if(state == 1){
-      colors = 4;
-    }
-    else{
-      colors = 2;
-    }
-	for (var i=0;i<16;i++) {
-		arr[i] = [];
-	}
-	for (var i =0; i<16; i++ ){
-		for (var j =0; j<16; j++ ){
-			arr[i][j] = Math.floor(Math.random() * colors);
-		}
-	}
-  }
+  </div>
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+</div>
+  <div id = "condiv">
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-  function getCursorPosition(canvas) {
-	var  rect = canvas.getBoundingClientRect();
-	var x = event.clientX - rect.left;
-	var y = event.clientY - rect.top;
-	console.log("x: " + x + "y: " + y);
-  }
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-  function rect(props) {
-	const {ctx, x, y, width, height} = props;
-	ctx.fillStyle = "black";
-	ctx.fillRect(x, y, width, height);
-	ctx.fillStyle = props.color;
-	ctx.fillRect(x+1, y+1, width-2, height-2);
-  }
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-  class SameGameBoard extends React.Component {
-	constructor(props, context) {
-		super(props, context);
+  </div>
+    <div id = "condiv">
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-		this.state = {
-			board: [],
-			gameOver: false,
-			score: 0,
-			lastamount: 0,
-			gameMode: 2, // change to 1 for 4 color mode, anything else for 2 color mode !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			colors: ["red", "blue", "green", "yellow"]
-		}
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-		initArray(this.state.gameMode, this.state.board);
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-		this.findMatch = this.findMatch.bind(this);
-		this.recurseMatch = this.recurseMatch.bind(this);
-		this.updateScore = this.updateScore.bind(this);
-		this.refresh = this.refresh.bind(this);
-		this.hasMatch = this.hasMatch.bind(this);
-	}
+</div>
 
-	refresh(e) {
-		this.setState({
-			gameOver: false,
-			score: 0,
-			lastamount: 0
-		});
-		initArray(this.state.gameMode, this.state.board);
-	}
-
-	findMatch(e){
-	    var rect = e.target.getBoundingClientRect();
-		var j = Math.floor((e.clientX - rect.left)/25.0);
-		var i = Math.floor((e.clientY - rect.top)/25.0);
-		if(this.state.board[i][j] == -1) {
-			return;
-		}
-		var match = false;
-		if(i-1 >= 0 && this.state.board[i-1][j]==this.state.board[i][j]){match = true;}
-		if(j-1 >= 0 && this.state.board[i][j-1]==this.state.board[i][j]){match = true;}
-		if(i+1 <= 15 && this.state.board[i+1][j]==this.state.board[i][j]){match = true;}
-		if(j+1 <= 15 && this.state.board[i][j+1]==this.state.board[i][j]){match = true;}
-		if(match){
-			this.recurseMatch(i,j);
-			this.updateCanvas();
-			this.updateScore();
-		}
-	}
-
-	hasMatch(i,j) {
-		if(this.state.board[i][j] == -1) {
-			return false;
-		}
-		var match = false;
-		if(i-1 >= 0 && this.state.board[i-1][j]==this.state.board[i][j]){match = true;}
-		if(j-1 >= 0 && this.state.board[i][j-1]==this.state.board[i][j]){match = true;}
-		if(i+1 <= 15 && this.state.board[i+1][j]==this.state.board[i][j]){match = true;}
-		if(j+1 <= 15 && this.state.board[i][j+1]==this.state.board[i][j]){match = true;}
-		return match;
-	}
-
-	updateScore() {
-		if(this.state.board[15][0] == -1) {
-			alert("Player won!");
-		}else if(this.state.gameOver) {
-			alert("GAME OVER");
-		}
-		var current = this.state.score;
-		this.setState({
-			score: current
-		});
-	}
-
-	recurseMatch(i,j){
-		var color = this.state.board[i][j];
-		this.state.board[i][j] = -1;
-		if(i-1 >= 0 && this.state.board[i-1][j]==color){this.recurseMatch(i-1, j);}
-		if(j-1 >= 0 && this.state.board[i][j-1]==color){this.recurseMatch(i, j-1);}
-		if(i+1 <= 15 && this.state.board[i+1][j]==color){this.recurseMatch(i+1, j);}
-		if(j+1 <= 15 && this.state.board[i][j+1]==color){this.recurseMatch(i, j+1);}
-
-	}
-
-	componentDidMount() {
-		this.updateCanvas();
-	}
-
-	componentDidUpdate() {
-		this.updateCanvas();
-	}
-
-	updateCanvas() {
-		var scoreAdd = 0;
-		const ctx = this.refs.canvas.getContext('2d');
-		for(var col = 0; col < this.state.board.length; col++) {
-			var index = this.state.board[col].indexOf(-1);
-			var numNegs = 0;
-			while(index > -1) {
-				this.state.board[col].splice(index,1);
-				numNegs++;
-				scoreAdd++;
-				index = this.state.board[col].indexOf(-1);
-			}
-			var i = 0;
-			while(i < numNegs) {
-				this.state.board[col].push(-1);
-				i++;
-			}
-			if(this.state.board[col][0] == -1) {
-				this.state.board.splice(col,1);
-				this.state.board.splice(0, 0, [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
-			}
-		}
-		var blocks = scoreAdd - this.state.lastamount;
-		this.state.lastamount = scoreAdd;
-		this.state.score += blocks * (blocks - 1);
-		var gameOver = true;
-		for(var col = 0; col < this.state.board.length; col++) {
-			for(var row = 0; row < this.state.board[col].length; row++) {
-				if(this.state.board[col][row] != -1) {
-					rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: this.state.colors[this.state.board[col][row]]} );
-				} else {
-					rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: "black"} );
-				}
-				if(this.hasMatch(col, row)){
-					gameOver = false;
-				}
-			}
-		}
-		if(gameOver){
-			this.state.gameOver = true;
-		}
-
-	}
-
-	render() {
-		var style = {
-			border: "1px solid black"
-		}
-
-		return (
-			<div>
-				<canvas id="canvas" onClick={this.findMatch} width={400} height={400} ref ="canvas" style={style}></canvas>
-				<p>Score: {this.state.score}</p>
-				<button onClick={this.refresh}>Refresh</button>
-			</div>
-		);
-	}
-  }
-
-  ReactDOM.render(
-    <div>
-	  <h1>The SameGame</h1>
-      <SameGameBoard/>
-    </div>,
-    document.querySelector("#container")
-  );
-
-  </script>
+<div id = "condiv">
+  <img id="drag1" src="images/image_part_001.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag2" src="images/image_part_002.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag3" src="images/image_part_003.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag4" src="images/image_part_004.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag5" src="images/image_part_005.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag6" src="images/image_part_006.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag7" src="images/image_part_007.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag8" src="images/image_part_008.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+  <img id="drag9" src="images/image_part_009.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+</div>
 
 
 </body>
