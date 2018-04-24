@@ -52,24 +52,6 @@
   <div id="container"></div>
 
   <script type="text/babel">
-  //var arr = [];
-  function initArray(state, arr) {
-    var colors = 0;
-    if(state == 1){
-      colors = 4;
-    }
-    else{
-      colors = 2;
-    }
-	for (var i=0;i<16;i++) {
-		arr[i] = [];
-	}
-	for (var i =0; i<16; i++ ){
-		for (var j =0; j<16; j++ ){
-			arr[i][j] = Math.floor(Math.random() * colors);
-		}
-	}
-  }
 
   function getCursorPosition(canvas) {
 	var  rect = canvas.getBoundingClientRect();
@@ -80,32 +62,43 @@
 
   function rect(props) {
 	const {ctx, x, y, width, height} = props;
-	ctx.fillStyle = "black";
+	ctx.fillStyle = "white";
 	ctx.fillRect(x, y, width, height);
 	ctx.fillStyle = props.color;
 	ctx.fillRect(x+1, y+1, width-2, height-2);
   }
 
   class SameGameBoard extends React.Component {
+  
 	constructor(props, context) {
 		super(props, context);
 
 		this.state = {
-			board: [],
+			board: [], // empty array will be filled with 16x16 empty spaces
+			snake: [[8,4]], // a list of coordinates for each part of snake [y,x]
+			direction: 'E', // direction is N (-x), E (+y), S (+x), or W (-y)
 			gameOver: false,
-			score: 0,
-			lastamount: 0,
-			gameMode: 2, // change to 1 for 4 color mode, anything else for 2 color mode !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			colors: ["red", "blue", "green", "yellow"]
+			score: 0, // +10 for each 'apple' eaten
+			colors: ["black", "white", "red"] // white is snake, red is apple, black is nothing
 		}
 
-		initArray(this.state.gameMode, this.state.board);
-
-		this.findMatch = this.findMatch.bind(this);
-		this.recurseMatch = this.recurseMatch.bind(this);
-		this.updateScore = this.updateScore.bind(this);
-		this.refresh = this.refresh.bind(this);
-		this.hasMatch = this.hasMatch.bind(this);
+		this.init = this.init.bind(this);
+		
+		this.init(this.state.board);
+		setInterval(this.tick, 200);
+	}
+	
+	//fills board with black squares (value of 0) and the middle square will be white and a random square will be red
+	init(arr) {
+		for (var i=0;i<16;i++) {
+			arr[i] = [];
+		}
+		for (var i =0; i<16; i++ ){
+			for (var j =0; j<16; j++ ){
+				arr[i][j] = 0;
+			}
+		}
+		arr[this.state.snake[0][0]][this.state.snake[0][1]] = 1;
 	}
 
 	refresh(e) {
@@ -117,59 +110,6 @@
 		initArray(this.state.gameMode, this.state.board);
 	}
 
-	findMatch(e){
-	    var rect = e.target.getBoundingClientRect();
-		var j = Math.floor((e.clientX - rect.left)/25.0);
-		var i = Math.floor((e.clientY - rect.top)/25.0);
-		if(this.state.board[i][j] == -1) {
-			return;
-		}
-		var match = false;
-		if(i-1 >= 0 && this.state.board[i-1][j]==this.state.board[i][j]){match = true;}
-		if(j-1 >= 0 && this.state.board[i][j-1]==this.state.board[i][j]){match = true;}
-		if(i+1 <= 15 && this.state.board[i+1][j]==this.state.board[i][j]){match = true;}
-		if(j+1 <= 15 && this.state.board[i][j+1]==this.state.board[i][j]){match = true;}
-		if(match){
-			this.recurseMatch(i,j);
-			this.updateCanvas();
-			this.updateScore();
-		}
-	}
-
-	hasMatch(i,j) {
-		if(this.state.board[i][j] == -1) {
-			return false;
-		}
-		var match = false;
-		if(i-1 >= 0 && this.state.board[i-1][j]==this.state.board[i][j]){match = true;}
-		if(j-1 >= 0 && this.state.board[i][j-1]==this.state.board[i][j]){match = true;}
-		if(i+1 <= 15 && this.state.board[i+1][j]==this.state.board[i][j]){match = true;}
-		if(j+1 <= 15 && this.state.board[i][j+1]==this.state.board[i][j]){match = true;}
-		return match;
-	}
-
-	updateScore() {
-		if(this.state.board[15][0] == -1) {
-			alert("Player won!");
-		}else if(this.state.gameOver) {
-			alert("GAME OVER");
-		}
-		var current = this.state.score;
-		this.setState({
-			score: current
-		});
-	}
-
-	recurseMatch(i,j){
-		var color = this.state.board[i][j];
-		this.state.board[i][j] = -1;
-		if(i-1 >= 0 && this.state.board[i-1][j]==color){this.recurseMatch(i-1, j);}
-		if(j-1 >= 0 && this.state.board[i][j-1]==color){this.recurseMatch(i, j-1);}
-		if(i+1 <= 15 && this.state.board[i+1][j]==color){this.recurseMatch(i+1, j);}
-		if(j+1 <= 15 && this.state.board[i][j+1]==color){this.recurseMatch(i, j+1);}
-
-	}
-
 	componentDidMount() {
 		this.updateCanvas();
 	}
@@ -179,31 +119,9 @@
 	}
 
 	updateCanvas() {
-		var scoreAdd = 0;
 		const ctx = this.refs.canvas.getContext('2d');
-		for(var col = 0; col < this.state.board.length; col++) {
-			var index = this.state.board[col].indexOf(-1);
-			var numNegs = 0;
-			while(index > -1) {
-				this.state.board[col].splice(index,1);
-				numNegs++;
-				scoreAdd++;
-				index = this.state.board[col].indexOf(-1);
-			}
-			var i = 0;
-			while(i < numNegs) {
-				this.state.board[col].push(-1);
-				i++;
-			}
-			if(this.state.board[col][0] == -1) {
-				this.state.board.splice(col,1);
-				this.state.board.splice(0, 0, [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
-			}
-		}
-		var blocks = scoreAdd - this.state.lastamount;
-		this.state.lastamount = scoreAdd;
-		this.state.score += blocks * (blocks - 1);
-		var gameOver = true;
+		
+		//draw board with appropriate colors (no game logic here)
 		for(var col = 0; col < this.state.board.length; col++) {
 			for(var row = 0; row < this.state.board[col].length; row++) {
 				if(this.state.board[col][row] != -1) {
@@ -211,13 +129,7 @@
 				} else {
 					rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: "black"} );
 				}
-				if(this.hasMatch(col, row)){
-					gameOver = false;
-				}
 			}
-		}
-		if(gameOver){
-			this.state.gameOver = true;
 		}
 
 	}
@@ -229,7 +141,7 @@
 
 		return (
 			<div>
-				<canvas id="canvas" onClick={this.findMatch} width={400} height={400} ref ="canvas" style={style}></canvas>
+				<canvas id="canvas" onKeyPress={this.findMatch} width={400} height={400} ref ="canvas" style={style}></canvas>
 				<p>Score: {this.state.score}</p>
 				<button onClick={this.refresh}>Refresh</button>
 			</div>
