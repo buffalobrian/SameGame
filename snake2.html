@@ -1,0 +1,88 @@
+<canvas id="canvas" width="400" height="400"></canvas>
+<script>
+window.onload=function() {
+	cvs = document.getElementById("canvas");
+	ctx = cvs.getContext("2d");
+	document.addEventListener("keydown",handleKeyDown);
+	setInterval(game,1000/10);
+}
+
+pos_x=pos_y=10; //plapple_yer position
+x_dir=y_dir=0; //x and y velocity/direction
+apple_x=apple_y=15; //apple position
+tc=16; //gridsize and tilecount
+gs = 25;
+trail = [];
+tail = 5;
+
+function game() {
+	pos_x+=x_dir;
+	pos_y+=y_dir;
+	if(pos_x<0) { //x pos is past table left
+		pos_x=tc-1; // TODO game over
+	}
+	if(pos_x > tc-1) { //x pos is past table right
+		pos_x=0; //game over
+	}
+	if(pos_y<0) { //y pos is past table top
+		pos_y=tc-1; //game over
+	}
+	if(pos_y>tc-1) { // y pos is past table bottom
+		pos_y=0; //game over
+	}
+	
+	//DRAW grid
+	ctx.fillStyle="white";
+	ctx.fillRect(0, 0, cvs.width, cvs.height);
+	for(var i = 0; i < tc; i++) {
+		for(var j = 0; j < tc; j++) {
+			ctx.fillStyle="grey";
+			ctx.fillRect(i*gs+1, j*gs+1, gs-2, gs-2);
+		}
+	}
+	
+	//DRAW snake & LOGIC crash into itself
+	ctx.fillStyle="#32CD32";
+	for(var i=0; i < trail.length; i++) {
+		ctx.fillRect(trail[i].x*gs+1, trail[i].y*gs+1, gs-2, gs-2);
+		// if any of the trail intersects with the head, game over
+		if(trail[i].x == pos_x && trail[i].y == pos_y) {
+			tail = 5; // game over
+		}
+	}
+	
+	// LOGIC add tailpart to snake after every frame until the trail.lenght == tail
+	trail.push({x:pos_x,y:pos_y});
+	while(trail.length>tail){
+		trail.shift();
+	}
+	
+	// LOGIC if head eats apple, add to tail and randomly place new apple
+	if(apple_x==pos_x && apple_y==pos_y) {
+		tail++;
+		apple_x=Math.floor(Math.random()*tc);
+		apple_y=Math.floor(Math.random()*tc);
+	}
+	
+	// DRAW apple
+	ctx.fillStyle="red";
+	ctx.fillRect(apple_x*gs+1, apple_y*gs+1, gs-2, gs-2);
+}
+	
+function handleKeyDown(e) {
+	switch(e.keyCode) {
+		case 37: //left
+			x_dir=-1;y_dir=0;
+			break;
+		case 38: //up
+			x_dir=0;y_dir=-1;
+			break;
+		case 39: //right
+			x_dir=1;y_dir=0;
+			break;
+		case 40: //down
+			x_dir=0;y_dir=1;
+			break;
+	}
+}
+</script>

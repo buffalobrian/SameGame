@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>The SameGame</title>
+  <title>Snake</title>
   <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
@@ -41,7 +41,7 @@
           <a class="nav-link" href="SameGame.html">SameGame</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="snake.html">Snake</a>
+          <a class="nav-link active" href="snake.html">Snake</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="puzzle.html">Puzzle</a>
@@ -49,123 +49,128 @@
       </ul>
     </div>
   </nav>
-  <div id="container"></div>
+  <h1>Snake</h1>
+  <canvas id="canvas" width="400" height="400"></canvas>
+  <h2 id="score">Score: 0</h2>
+<script>
+window.onload=function() {
+	cvs = document.getElementById("canvas");
+	ctx = cvs.getContext("2d");
+	document.addEventListener("keydown",handleKeyDown);
+	setInterval(game,1000/10); //sets frame rate (1/10 of a second)
+}
 
-  <script type="text/babel">
+pos_x=pos_y=10; //plapple_yer position
+x_dir=y_dir=0; //x and y velocity/direction
+apple_x=apple_y=15; //apple position
+tc=16; //gridsize and tilecount
+gs = 25;
+trail = [];
+tail = 5;
+lose = false;
 
-  function getCursorPosition(canvas) {
-	var  rect = canvas.getBoundingClientRect();
-	var x = event.clientX - rect.left;
-	var y = event.clientY - rect.top;
-	console.log("x: " + x + "y: " + y);
-  }
+function gameover() {
+	//reset game board
+	pos_x=pos_y=10; 
+	x_dir=y_dir=0; 
+	apple_x=apple_y=15; 
+	trail=[];
+	tail=5;
+	lose = true;
+}
 
-  function rect(props) {
-	const {ctx, x, y, width, height} = props;
-	ctx.fillStyle = "white";
-	ctx.fillRect(x, y, width, height);
-	ctx.fillStyle = props.color;
-	ctx.fillRect(x+1, y+1, width-2, height-2);
-  }
-
-  class SameGameBoard extends React.Component {
-  
-	constructor(props, context) {
-		super(props, context);
-
-		this.state = {
-			board: [], // empty array will be filled with 16x16 empty spaces
-			snake: [[8,4]], // a list of coordinates for each part of snake [y,x]
-			direction: 'E', // direction is N (-x), E (+y), S (+x), or W (-y)
-			gameOver: false,
-			score: 0, // +10 for each 'apple' eaten
-			colors: ["black", "white", "red"] // white is snake, red is apple, black is nothing
+function game() {
+	if(lose) {
+		alert("gameover");
+		lose = false;
+	}
+	//move snake head in appropriate direction
+	pos_x+=x_dir;
+	pos_y+=y_dir;
+	
+	//DRAW grid
+	ctx.fillStyle="white";
+	ctx.fillRect(0, 0, cvs.width, cvs.height);
+	for(var i = 0; i < tc; i++) {
+		for(var j = 0; j < tc; j++) {
+			ctx.fillStyle="grey";
+			ctx.fillRect(i*gs+1, j*gs+1, gs-2, gs-2);
 		}
-
-		this.init = this.init.bind(this);
-		this.tick = this.tick.bind(this);
-		
-		this.init(this.state.board);
-		setInterval(this.tick, 200);
 	}
 	
-	//fills board with black squares (value of 0) and the middle square will be white and a random square will be red
-	init(arr) {
-		for (var i=0;i<16;i++) {
-			arr[i] = [];
+	//DRAW snake & LOGIC crash into itself
+	ctx.fillStyle="#32CD32";
+	for(var i=0; i < trail.length; i++) {
+		ctx.fillRect(trail[i].x*gs+1, trail[i].y*gs+1, gs-2, gs-2);
+		// if any of the trail intersects with the head, game over
+		if(trail[i].x == pos_x && trail[i].y == pos_y) {
+			document.getElementById("score").innerHTML = "Score: 0";
+			//reset game board
+			pos_x=pos_y=10; 
+			x_dir=y_dir=0; 
+			apple_x=apple_y=15; 
+			trail=[];
+			tail=5;
 		}
-		for (var i =0; i<16; i++ ){
-			for (var j =0; j<16; j++ ){
-				arr[i][j] = 0;
-			}
-		}
-		arr[this.state.snake[0][0]][this.state.snake[0][1]] = 1;
-	}
-
-	refresh(e) {
-		this.setState({
-			gameOver: false,
-			score: 0,
-			lastamount: 0
-		});
-		initArray(this.state.gameMode, this.state.board);
-	}
-
-	componentDidMount() {
-		this.updateCanvas();
-	}
-
-	componentDidUpdate() {
-		this.updateCanvas();
 	}
 	
-	tick() {
-		this.state.snake = [[0,0]];
-		this.updateCanvas();
+	// LOGIC add tailpart to snake after every frame until the trail.lenght == tail
+	trail.push({x:pos_x,y:pos_y});
+	while(trail.length>tail){
+		trail.shift();
 	}
-
-	updateCanvas() {
-		const ctx = this.refs.canvas.getContext('2d');
-		
-		//draw board with appropriate colors (no game logic here)
-		for(var col = 0; col < this.state.board.length; col++) {
-			for(var row = 0; row < this.state.board[col].length; row++) {
-				if(this.state.board[col][row] != -1) {
-					rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: this.state.colors[this.state.board[col][row]]} );
-				} else {
-					rect( {ctx, x: 25*row, y: 25*col, width: 25, height: 25, color: "black"} );
-				}
-			}
-		}
-
+	
+	// LOGIC if head eats apple, add to tail and randomly place new apple
+	if(apple_x==pos_x && apple_y==pos_y) {
+		tail++;
+		document.getElementById("score").innerHTML = "Score: " + (tail-5).toString();
+		apple_x=Math.floor(Math.random()*tc);
+		apple_y=Math.floor(Math.random()*tc);
 	}
-
-	render() {
-		var style = {
-			border: "1px solid black"
-		}
-
-		return (
-			<div>
-				<canvas id="canvas" onKeyPress={this.findMatch} width={400} height={400} ref ="canvas" style={style}></canvas>
-				<p>Score: {this.state.score}</p>
-				<button onClick={this.refresh}>Refresh</button>
-			</div>
-		);
+	if(tail == tc*tc) {
+		alert("CONGRATULATIONS\nYOU WON");
 	}
-  }
-
-  ReactDOM.render(
-    <div>
-	  <h1>The SameGame</h1>
-      <SameGameBoard/>
-    </div>,
-    document.querySelector("#container")
-  );
-
-  </script>
-
-
+	
+	//if snake runs off, loop around
+	if(pos_x<0) { //x pos is past table left
+		//reset game board
+		gameover();
+	}
+	if(pos_x > tc) { //x pos is past table right
+		//reset game board
+		gameover();
+	}
+	if(pos_y<0) { //y pos is past table top
+		//reset game board
+		gameover();
+	}
+	if(pos_y>tc) { // y pos is past table bottom
+		//reset game board
+		gameover();
+	}
+	
+	// DRAW apple
+	ctx.fillStyle="red";
+	ctx.fillRect(apple_x*gs+1, apple_y*gs+1, gs-2, gs-2);
+}
+	
+function handleKeyDown(e) {
+	switch(e.keyCode) {
+		case 37: //left
+			x_dir=-1;y_dir=0;
+			break;
+		case 38: //up
+			x_dir=0;y_dir=-1;
+			break;
+		case 39: //right
+			x_dir=1;y_dir=0;
+			break;
+		case 40: //down
+			x_dir=0;y_dir=1;
+			break;
+	}
+}
+</script>
 </body>
 
 </html>
