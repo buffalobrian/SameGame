@@ -22,6 +22,9 @@
 </head>
 
 <style>
+div{
+  float:left;
+}
 #div1 {
     width: 400px;
     height: 300px;
@@ -44,12 +47,39 @@ function drag(ev) {
 }
 
 function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
+  ev.preventDefault();
+   var src = document.getElementById(ev.dataTransfer.getData("text"));
+   var srcParent = src.parentNode;
+   var tgt = ev.currentTarget.firstElementChild;
+
+   ev.currentTarget.replaceChild(src, tgt);
+   srcParent.appendChild(tgt);
 }
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
+function start() {
+var parts =[9];
+for(i = 0; i<9; i++){
+  parts[i]=i+1;
+}
+
+shuffleArray(parts);
+
+for(square = 0; square<9;square++){
+document.getElementById('div'+ (square+1)).innerHTML += "<img id='drag"+parts[square]+"' src='images/image_part_00"+parts[square]+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
+}
+};
+
 </script>
-<body>
+<body onload="start()">
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
     <!-- Brand -->
     <a class="navbar-brand" href="index.html">TEAM 8</a>
@@ -78,41 +108,54 @@ function drop(ev) {
     </div>
   </nav>
   <div id="container"></div>
+
   <div id = "condiv">
+
   <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
-
+  <!-- <img id="drag1" src="images/image_part_001.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
   </div>
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag2" src="images/image_part_002.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+
 </div>
+    <div id="div3" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag3" src="images/image_part_003.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+</div>
+
+</div>
+
+
   <div id = "condiv">
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-  </div>
-    <div id = "condiv">
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
+    <div id="div4" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag4" src="images/image_part_004.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
 </div>
 
-<div id = "condiv">
-  <img id="drag1" src="images/image_part_001.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag2" src="images/image_part_002.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag3" src="images/image_part_003.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag4" src="images/image_part_004.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag5" src="images/image_part_005.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag6" src="images/image_part_006.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag7" src="images/image_part_007.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag8" src="images/image_part_008.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
-  <img id="drag9" src="images/image_part_009.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block">
+    <div id="div5" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag5" src="images/image_part_005.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
 </div>
+
+    <div id="div6" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag6" src="images/image_part_006.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+</div>
+</div>
+
+  <div id = "condiv">
+
+    <div id="div7" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag7" src="images/image_part_007.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+</div>
+
+    <div id="div8" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag8" src="images/image_part_008.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+</div>
+
+    <div id="div9" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <!-- <img id="drag9" src="images/image_part_009.jpg" draggable="true" ondragstart="drag(event)" width="400" height="300" padding= "0" margin= "0" display ="inline-block"> -->
+    </div>
+
+    </div>
 
 
 </body>
