@@ -54,6 +54,25 @@ function drop(ev) {
 
    ev.currentTarget.replaceChild(src, tgt);
    srcParent.appendChild(tgt);
+
+   var done = true;
+
+   for(i = 1; i<10; i++){
+
+     var divamajig = document.getElementById('div'+i);
+     var dChild = divamajig.childNodes[3];
+     if(dChild.id != "drag" + i ){
+       done = false;
+     }
+   }
+
+   if(done){
+     win();
+   }
+}
+
+function win(){
+  alert("you win");
 }
 
 function shuffleArray(array) {
