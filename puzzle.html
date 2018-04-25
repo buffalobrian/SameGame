@@ -51,6 +51,8 @@ function drop(ev) {
    var src = document.getElementById(ev.dataTransfer.getData("text"));
    var srcParent = src.parentNode;
    var tgt = ev.currentTarget.firstElementChild;
+   var sound = document.getElementById("puzzleSound");
+   sound.play();
 
    ev.currentTarget.replaceChild(src, tgt);
    srcParent.appendChild(tgt);
@@ -99,6 +101,11 @@ document.getElementById('div'+ (square+1)).innerHTML += "<img id='drag"+parts[sq
 
 </script>
 <body onload="start()">
+    
+  <audio id="puzzleSound">
+  <source src="sound.mp3" type="audio/mpeg">
+</audio>
+    
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
     <!-- Brand -->
     <a class="navbar-brand" href="index.html">TEAM 8</a>
