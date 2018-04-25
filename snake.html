@@ -103,14 +103,10 @@ function game() {
 	for(var i=0; i < trail.length; i++) {
 		ctx.fillRect(trail[i].x*gs+1, trail[i].y*gs+1, gs-2, gs-2);
 		// if any of the trail intersects with the head, game over
-		if(trail[i].x == pos_x && trail[i].y == pos_y) {
+		if(!(x_dir==0 && y_dir == 0) && trail[i].x == pos_x && trail[i].y == pos_y) {
 			document.getElementById("score").innerHTML = "Score: 0";
 			//reset game board
-			pos_x=pos_y=10; 
-			x_dir=y_dir=0; 
-			apple_x=apple_y=15; 
-			trail=[];
-			tail=5;
+			gameover();
 		}
 	}
 	
@@ -136,7 +132,7 @@ function game() {
 		//reset game board
 		gameover();
 	}
-	if(pos_x > tc) { //x pos is past table right
+	if(pos_x > tc-1) { //x pos is past table right
 		//reset game board
 		gameover();
 	}
@@ -144,7 +140,7 @@ function game() {
 		//reset game board
 		gameover();
 	}
-	if(pos_y>tc) { // y pos is past table bottom
+	if(pos_y>tc-1) { // y pos is past table bottom
 		//reset game board
 		gameover();
 	}
