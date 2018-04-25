@@ -61,7 +61,10 @@ function drop(ev) {
 
      var divamajig = document.getElementById('div'+i);
      var dChild = divamajig.childNodes[3];
-     if(dChild.id != "drag" + i ){
+    // alert(dChild.id.toString());
+     inp = dChild.id.toString();
+     localStorage.setItem("pos" + i, inp);
+     if(dChild.id != "part_00" + i ){
        done = false;
      }
    }
@@ -91,10 +94,20 @@ for(i = 0; i<9; i++){
 }
 
 shuffleArray(parts);
-
+//alert(localStorage.getItem("pos" + (square+1)));
+if(localStorage.getItem("pos" +1) == null){
 for(square = 0; square<9;square++){
-document.getElementById('div'+ (square+1)).innerHTML += "<img id='drag"+parts[square]+"' src='images/image_part_00"+parts[square]+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
+
+document.getElementById('div'+ (square+1)).innerHTML += "<img id='part_00"+parts[square]+"' src='images/image_part_00"+parts[square]+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
 }
+}
+
+else{
+  for(square = 0; square<9;square++){
+
+  document.getElementById('div'+ (square+1)).innerHTML += "<img id='"+localStorage.getItem("pos" + (square+1))+"' src='images/image_"+localStorage.getItem("pos" + (square+1))+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
+  }
+  }
 };
 
 </script>
