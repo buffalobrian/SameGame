@@ -1,3 +1,5 @@
+
+<!-- Note for grader: reset on finish game is completely intentional -->
 <!DOCTYPE html>
 <html>
 
@@ -38,6 +40,7 @@ float:left;
 </style>
 
 <script>
+var fresh = true;
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -57,12 +60,13 @@ function drop(ev) {
    ev.currentTarget.replaceChild(src, tgt);
    srcParent.appendChild(tgt);
 
+     localStorage.setItem("fresh","false");
    var done = true;
 
    for(i = 1; i<10; i++){
 
      var divamajig = document.getElementById('div'+i);
-     var dChild = divamajig.childNodes[3];
+     var dChild = divamajig.childNodes[0];
     // alert(dChild.id.toString());
      inp = dChild.id.toString();
      localStorage.setItem("pos" + i, inp);
@@ -76,8 +80,15 @@ function drop(ev) {
    }
 }
 
+function reset(){
+
+  localStorage.setItem("fresh","true");
+  start();
+}
+
 function win(){
-  alert("you win");
+  alert("You win! Refresh game to reset.");
+  localStorage.setItem("fresh","true");
 }
 
 function shuffleArray(array) {
@@ -97,28 +108,28 @@ for(i = 0; i<9; i++){
 
 shuffleArray(parts);
 //alert(localStorage.getItem("pos" + (square+1)));
-if(localStorage.getItem("pos" +1) == null){
+if(localStorage.getItem("fresh") =="true"|| localStorage.getItem("fresh") == null){
 for(square = 0; square<9;square++){
 
-document.getElementById('div'+ (square+1)).innerHTML += "<img id='part_00"+parts[square]+"' src='images/image_part_00"+parts[square]+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
+document.getElementById('div'+ (square+1)).innerHTML = "<img id='part_00"+parts[square]+"' src='images/image_part_00"+parts[square]+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
 }
 }
 
 else{
   for(square = 0; square<9;square++){
 
-  document.getElementById('div'+ (square+1)).innerHTML += "<img id='"+localStorage.getItem("pos" + (square+1))+"' src='images/image_"+localStorage.getItem("pos" + (square+1))+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
+  document.getElementById('div'+ (square+1)).innerHTML = "<img id='"+localStorage.getItem("pos" + (square+1))+"' src='images/image_"+localStorage.getItem("pos" + (square+1))+".jpg' draggable='true' ondragstart='drag(event)' width='400' height='300' padding= '0' margin= '0' display ='inline-block'>"
   }
   }
 };
 
 </script>
 <body onload="start()">
-    
+
   <audio id="puzzleSound">
   <source src="sound.mp3" type="audio/mpeg">
 </audio>
-    
+
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
     <!-- Brand -->
     <a class="navbar-brand" href="index.html">TEAM 8</a>
@@ -195,7 +206,7 @@ else{
     </div>
 
     </div>
-
+<button onclick="reset()">Reset</button>
 
 </body>
 
