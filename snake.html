@@ -38,7 +38,7 @@
           <a class="nav-link" href="index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="SameGame.html">SameGame</a>
+          <a class="nav-link" href="samegame.html">SameGame</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link active" href="snake.html">Snake</a>
@@ -68,6 +68,8 @@ gs = 25;
 trail = [];
 tail = 5;
 lose = false;
+apple_x=Math.floor(Math.random()*tc);
+apple_y=Math.floor(Math.random()*tc);
 
 function gameover() {
 	//reset game board
@@ -77,12 +79,17 @@ function gameover() {
 	trail=[];
 	tail=5;
 	lose = true;
+	apple_x=Math.floor(Math.random()*tc);
+	apple_y=Math.floor(Math.random()*tc);
+	document.getElementById("score").innerHTML = "Score: 0";
 }
 
 function game() {
 	if(lose) {
 		alert("gameover");
 		lose = false;
+		x_dir=y_dir=false;
+		return;
 	}
 	//move snake head in appropriate direction
 	pos_x+=x_dir;
@@ -98,13 +105,16 @@ function game() {
 		}
 	}
 	
+	// DRAW apple
+	ctx.fillStyle="red";
+	ctx.fillRect(apple_x*gs+1, apple_y*gs+1, gs-2, gs-2);
+	
 	//DRAW snake & LOGIC crash into itself
 	ctx.fillStyle="#32CD32";
 	for(var i=0; i < trail.length; i++) {
 		ctx.fillRect(trail[i].x*gs+1, trail[i].y*gs+1, gs-2, gs-2);
 		// if any of the trail intersects with the head, game over
 		if(!(x_dir==0 && y_dir == 0) && trail[i].x == pos_x && trail[i].y == pos_y) {
-			document.getElementById("score").innerHTML = "Score: 0";
 			//reset game board
 			gameover();
 		}
@@ -119,7 +129,7 @@ function game() {
 	// LOGIC if head eats apple, add to tail and randomly place new apple
 	if(apple_x==pos_x && apple_y==pos_y) {
 		tail++;
-		document.getElementById("score").innerHTML = "Score: " + (tail-5).toString();
+		document.getElementById("score").innerHTML = "Score: " + ((tail-5)*10).toString();
 		apple_x=Math.floor(Math.random()*tc);
 		apple_y=Math.floor(Math.random()*tc);
 	}
@@ -144,10 +154,6 @@ function game() {
 		//reset game board
 		gameover();
 	}
-	
-	// DRAW apple
-	ctx.fillStyle="red";
-	ctx.fillRect(apple_x*gs+1, apple_y*gs+1, gs-2, gs-2);
 }
 	
 function handleKeyDown(e) {

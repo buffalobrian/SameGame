@@ -1,0 +1,27 @@
+'x' in front of the bug means that it was not addressed. 
+A reason is provided in the line below starting with ***.
+
+----------------Challenge 2------------------------
+
+x- could say why the player lost
+	***Not required and can be learned by playing the game more and more
+- Starting with a corner piece is tough
+- The alert that you won the puzzle game happens before the peices switch.
+- The start of the game always places the first snake piece at the bottom right
+- Game can start without you pressing an arrow key
+- Sometimes the score does not reset
+- Score only increases by 1
+- Does not link to SameGame
+NOTE: you may need to clear the cache to see the bug fix
+
+----------------Challenge 3------------------------
+	
+- If you win it doesn’t save the solved puzzle
+- No score associated with puzzle
+- Does not link to SameGame
+NOTE: you may need to clear the cache to see the bug fix
+- This one gets everything right from the rubric except for a couple pf things. Only feedback is no
+instructions (I know the game is super obvious but for the assignment a note about dragging pieces to
+their places might be good for full points).
+- Also, there isn’t a score like was mentioned in the rubric. So that might be something to add. But make
+sure you can’t replace pieces constantly and get more score. Could be a fastest time thing.
