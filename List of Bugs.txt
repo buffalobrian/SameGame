@@ -11,17 +11,15 @@ x- could say why the player lost
 - Game can start without you pressing an arrow key
 - Sometimes the score does not reset
 - Score only increases by 1
-x- Does not link to SameGame
-	***Link works at the top navigation bar and games are not required to be played sequentially
-	therefore not a bug.
+- Does not link to SameGame
+NOTE: you may need to clear the cache to see the bug fix
 
 ----------------Challenge 3------------------------
 	
 - If you win it doesn’t save the solved puzzle
 - No score associated with puzzle
 - Does not link to SameGame
-	***Link works at the top navigation bar and games are not required to be played sequentially
-	therefore not a bug.
+NOTE: you may need to clear the cache to see the bug fix
 - This one gets everything right from the rubric except for a couple pf things. Only feedback is no
 instructions (I know the game is super obvious but for the assignment a note about dragging pieces to
 their places might be good for full points).
