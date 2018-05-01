@@ -87,8 +87,22 @@ function reset(){
 }
 
 function win(){
-  alert("You win! Refresh game to reset.");
+  alert("You win! Refresh the game or hit the button to reset.");
   localStorage.setItem("fresh","true");
+
+  if (localStorage.getItem("score") != null && localStorage.getItem("score") != NaN){
+  var score = localStorage.getItem("score");
+  var a = parseInt(score) + 1;
+}
+else{
+  var a = 1;
+}
+  localStorage.setItem("score",a.toString());
+
+  if (localStorage.getItem("score") != null || localStorage.getItem("score") != NaN){
+  //  alert(localStorage.getItem("score"));
+      document.getElementById('scorediv').innerHTML = 'score: ' + localStorage.getItem("score");
+  }
 }
 
 function shuffleArray(array) {
@@ -105,9 +119,17 @@ var parts =[9];
 for(i = 0; i<9; i++){
   parts[i]=i+1;
 }
-
 shuffleArray(parts);
 //alert(localStorage.getItem("pos" + (square+1)));
+if (localStorage.getItem("score") != null && localStorage.getItem("score") != NaN){
+//  alert(localStorage.getItem("score"));
+    document.getElementById('scorediv').innerHTML = 'score: ' + localStorage.getItem("score");
+}
+else{
+  localStorage.setItem("score", "1");
+    document.getElementById('scorediv').innerHTML = 'score: ' + localStorage.getItem("score");
+}
+
 if(localStorage.getItem("fresh") =="true"|| localStorage.getItem("fresh") == null){
 for(square = 0; square<9;square++){
 
@@ -207,6 +229,7 @@ else{
 
     </div>
 <button onclick="reset()">Reset</button>
+<div id="scorediv">Score: 0</div>
 
 </body>
 
